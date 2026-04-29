@@ -45,6 +45,14 @@
                 <button class="button" type="button" data-auth-mode="signup">Sign up</button>
                 <button class="mini-button" type="button" data-auth-mode="login">Log in</button>
               </div>
+              <form id="inlineAuthForm" class="inline-auth-form hidden">
+                <p class="eyebrow" id="inlineAuthModeLabel">Sign up</p>
+                <input id="inlineAuthName" name="name" type="text" placeholder="Your name">
+                <input name="email" type="email" placeholder="Email address" required>
+                <input name="password" type="password" placeholder="Password" required>
+                <button class="button full" type="submit" id="inlineAuthSubmit">Create account</button>
+                <p class="auth-helper" id="authStatus" aria-live="polite"></p>
+              </form>
             </section>
 
             <form class="selector-card" id="explorerForm">

@@ -57,6 +57,7 @@ const homePage = document.querySelector("#homePage");
 const communityPage = document.querySelector("#communityPage");
 const authModal = document.querySelector("#authModal");
 const authForm = document.querySelector("#authForm");
+const inlineAuthForm = document.querySelector("#inlineAuthForm");
 
 if (homeForm) initHome();
 if (shouldShowCommunity()) {
@@ -98,41 +99,78 @@ function initCommunity() {
 }
 
 function setupAuth() {
-  if (!authModal || !authForm) return;
-
-  document.querySelectorAll("[data-auth-mode]").forEach(button => {
-    button.addEventListener("click", () => {
-      openAuth(button.dataset.authMode || "signup");
-    });
+  document.addEventListener("click", event => {
+    const authButton = event.target.closest("[data-auth-mode]");
+    if (!authButton) return;
+    event.preventDefault();
+    openAuth(authButton.dataset.authMode || "signup", { inline: true });
   });
 
-  authForm.addEventListener("submit", event => {
+  authForm?.addEventListener("submit", event => {
     event.preventDefault();
-    const data = new FormData(authForm);
-    const selectedCommunity = getActiveContext();
-    profile = {
-      name: authMode === "login" ? profile?.name || "Member" : data.get("name"),
-      email: data.get("email"),
-      community: selectedCommunity
-    };
-    saveJson(profileKey, profile);
-    updateMyCommunityLinks();
+    completeAuth(new FormData(authForm));
     closeModal(authModal);
-    goToCommunity(selectedCommunity, "my");
+  });
+
+  inlineAuthForm?.addEventListener("submit", event => {
+    event.preventDefault();
+    const selectedCommunity = completeAuth(new FormData(inlineAuthForm));
+    const status = document.querySelector("#authStatus");
+    if (status) status.textContent = `${authMode === "login" ? "Logged in" : "Account created"}. Opening My Community...`;
+    window.setTimeout(() => goToCommunity(selectedCommunity, "my"), 350);
   });
 }
 
-function openAuth(mode) {
+function openAuth(mode, options = {}) {
   authMode = mode;
   const isLogin = mode === "login";
-  document.querySelector("#authModeLabel").textContent = isLogin ? "Log in" : "Sign up";
-  document.querySelector("#authTitle").textContent = isLogin ? "Log in to My Local Teams" : "Join My Local Teams";
-  document.querySelector("#authSubmit").textContent = isLogin ? "Log in" : "Create account";
-  const nameInput = document.querySelector("#authName");
-  nameInput.classList.toggle("hidden", isLogin);
-  nameInput.required = !isLogin;
-  authForm.reset();
+  updateAuthCopy(isLogin);
+
+  if (options.inline && inlineAuthForm && !homePage?.classList.contains("hidden")) {
+    inlineAuthForm.classList.remove("hidden");
+    inlineAuthForm.reset();
+    document.querySelector("#authStatus").textContent = "";
+    inlineAuthForm.scrollIntoView({ behavior: "smooth", block: "center" });
+    const focusTarget = isLogin ? inlineAuthForm.elements.email : document.querySelector("#inlineAuthName");
+    window.setTimeout(() => focusTarget?.focus(), 50);
+    return;
+  }
+
+  authForm?.reset();
   openModal(authModal);
+}
+
+function updateAuthCopy(isLogin) {
+  const modeLabel = isLogin ? "Log in" : "Sign up";
+  const title = isLogin ? "Log in to My Local Teams" : "Join My Local Teams";
+  const modalSubmit = isLogin ? "Log in" : "Create account";
+  const inlineSubmit = isLogin ? "Log in and open community" : "Create account and open community";
+
+  document.querySelector("#authModeLabel").textContent = modeLabel;
+  document.querySelector("#authTitle").textContent = title;
+  document.querySelector("#authSubmit").textContent = modalSubmit;
+  const modalNameInput = document.querySelector("#authName");
+  modalNameInput.classList.toggle("hidden", isLogin);
+  modalNameInput.required = !isLogin;
+
+  document.querySelector("#inlineAuthModeLabel").textContent = modeLabel;
+  document.querySelector("#inlineAuthSubmit").textContent = inlineSubmit;
+  const inlineNameInput = document.querySelector("#inlineAuthName");
+  inlineNameInput.classList.toggle("hidden", isLogin);
+  inlineNameInput.required = !isLogin;
+}
+
+function completeAuth(data) {
+  const selectedCommunity = getActiveContext();
+  const fallbackName = data.get("email") ? String(data.get("email")).split("@")[0] : "Member";
+  profile = {
+    name: authMode === "login" ? profile?.name || fallbackName : data.get("name"),
+    email: data.get("email"),
+    community: selectedCommunity
+  };
+  saveJson(profileKey, profile);
+  updateMyCommunityLinks();
+  return selectedCommunity;
 }
 
 function openModal(modal) {

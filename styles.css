@@ -230,6 +230,19 @@ p {
   gap: 8px;
 }
 
+.inline-auth-form {
+  display: grid;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.auth-helper {
+  min-height: 20px;
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
 label span {
   display: block;
   margin-bottom: 6px;
