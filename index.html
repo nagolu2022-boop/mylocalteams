@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="My Local Teams is a simple local community website for finding useful posts by location and community."
+    >
+    <title>My Local Teams</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="index.html" aria-label="My Local Teams home">
+          <span class="brand-mark">ML</span>
+          <span>My Local Teams</span>
+        </a>
+        <nav class="main-nav" aria-label="Primary navigation">
+          <a class="nav-heading active" id="homeNavLink" href="index.html">Home Page</a>
+          <a class="nav-heading" id="communityNavLink" href="index.html?country=UK&amp;city=Sheffield&amp;area=City+Centre&amp;community=Telugu+people&amp;mode=my" data-my-community-link>My Community</a>
+        </nav>
+        <div class="top-auth-actions" aria-label="Account actions">
+          <button class="top-auth-button primary" type="button" data-auth-mode="signup">Sign up</button>
+          <button class="top-auth-button" type="button" data-auth-mode="login">Log in</button>
+        </div>
+      </header>
+
+      <section class="home-page" id="homePage">
+        <div class="home-center" aria-labelledby="homeTitle">
+          <div class="home-copy">
+            <p class="eyebrow">Start here</p>
+            <h1 id="homeTitle">Choose your local community.</h1>
+          </div>
+
+          <div class="home-form-stack">
+            <section class="account-card" aria-labelledby="accountTitle">
+              <div>
+                <p class="eyebrow">Account</p>
+                <h2 id="accountTitle">Sign up or log in</h2>
+                <p>Save your community and start posting when you are ready.</p>
+              </div>
+              <div class="account-actions">
+                <button class="button" type="button" data-auth-mode="signup">Sign up</button>
+                <button class="mini-button" type="button" data-auth-mode="login">Log in</button>
+              </div>
+            </section>
+
+            <form class="selector-card" id="explorerForm">
+              <label>
+                <span>Country</span>
+                <select id="countrySelect" name="country"></select>
+              </label>
+              <label>
+                <span>City</span>
+                <select id="citySelect" name="city"></select>
+              </label>
+              <label>
+                <span>Area</span>
+                <select id="areaSelect" name="area"></select>
+              </label>
+              <label>
+                <span>Community</span>
+                <select id="communitySelect" name="community"></select>
+              </label>
+              <button class="button full" type="submit">Explore</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="community-page hidden" id="communityPage">
+        <div class="community-top" aria-labelledby="communityTitle">
+          <p class="eyebrow">My Community</p>
+          <h1 id="communityTitle">Community</h1>
+          <p id="communityLocation" class="muted-line">Location</p>
+        </div>
+
+        <nav class="tab-strip" id="tabStrip" aria-label="Community tabs"></nav>
+
+        <section class="tab-panel" aria-labelledby="feedTitle">
+          <div class="tab-panel-head">
+            <div>
+              <p class="eyebrow" id="activeTabLabel">Feed</p>
+              <h2 id="feedTitle">Posts</h2>
+            </div>
+            <button class="button compact" type="button" id="tabPostButton">Post</button>
+          </div>
+          <div class="post-list" id="postList"></div>
+        </section>
+      </section>
+    </main>
+
+    <dialog class="modal composer-modal" id="composerModal">
+      <button class="close" type="button" data-close aria-label="Close">x</button>
+      <form id="postForm" class="composer-form">
+        <p class="eyebrow" id="composerMode">New post</p>
+        <h2 id="composerTitle">Create post</h2>
+        <input name="title" type="text" placeholder="Title" required>
+        <textarea name="description" rows="4" placeholder="Short description" required></textarea>
+        <div class="form-grid" id="dynamicFields"></div>
+        <label class="upload-box">
+          <input id="imageInput" name="image" type="file" accept="image/*">
+          <span>Add photo</span>
+        </label>
+        <img class="image-preview hidden" id="imagePreview" alt="Selected photo preview">
+        <button class="button full" type="submit">Publish</button>
+      </form>
+    </dialog>
+
+    <dialog class="modal message-modal" id="messageModal">
+      <button class="close" type="button" data-close aria-label="Close">x</button>
+      <form id="messageForm" class="composer-form">
+        <p class="eyebrow">Private Ask</p>
+        <h2 id="messageTitle">Message creator</h2>
+        <textarea name="message" rows="4" placeholder="Write a private message" required></textarea>
+        <button class="button full" type="submit">Send</button>
+      </form>
+    </dialog>
+
+    <dialog class="modal auth-modal" id="authModal">
+      <button class="close" type="button" data-close aria-label="Close">x</button>
+      <form id="authForm" class="composer-form">
+        <p class="eyebrow" id="authModeLabel">Sign up</p>
+        <h2 id="authTitle">Join My Local Teams</h2>
+        <input id="authName" name="name" type="text" placeholder="Your name" required>
+        <input name="email" type="email" placeholder="Email address" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button class="button full" type="submit" id="authSubmit">Create account</button>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
